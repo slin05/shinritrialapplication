@@ -180,6 +180,14 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
 .jump button { border: 1px solid var(--line); background: var(--panel-2); color: var(--fg); border-radius: 999px; padding: 4px 11px; font-size: 12.5px; }
 .jump button:hover { border-color: var(--accent); color: var(--accent); }
 .group-title { scroll-margin-top: 92px; }
+
+/* Back to top */
+.to-top { position: fixed; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 45;
+  border: 1px solid var(--accent); background: var(--panel); color: var(--accent); border-radius: 999px; padding: 8px 14px;
+  font-family: var(--font-display); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; box-shadow: 0 4px 14px rgba(0,0,0,.45); }
+.to-top:hover { background: var(--accent); color: var(--accent-ink); }
+/* sit above the Copy / New trial bar on the Notes tab */
+@media (max-width: 880px) { body[data-tab="notes"] .to-top { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); } }
 </style>
 </head>
 <body>
@@ -261,6 +269,7 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
         <dl>
           <dt>Copy notes</dt><dd>Copies the formatted block, ready to paste</dd>
           <dt>New trial</dt><dd>Click twice to clear everything for the next chapter</dd>
+          <dt>↑ Top</dt><dd>Jump back to the top of any tab (shows once you scroll)</dd>
         </dl>
       </div>
     </div>
@@ -834,6 +843,7 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
   </div>
 </div>
 
+<button class="to-top" id="toTop" type="button" aria-label="Back to top" title="Back to top" hidden>↑ Top</button>
 <div class="dock">
   <button class="btn danger" id="reset2" type="button">New trial</button>
   <button class="btn primary" id="copy2" type="button">Copy notes</button>
@@ -1152,6 +1162,18 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
 document.querySelectorAll(".jump button").forEach(b => b.addEventListener("click", () => {
   const t = document.getElementById(b.dataset.jump); if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
 }));
+</script>
+
+<script>
+(function () {
+  const b = document.getElementById("toTop");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const upd = () => { b.hidden = window.scrollY < 300; };
+  window.addEventListener("scroll", upd, { passive: true });
+  b.addEventListener("click", () => window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }));
+  document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => setTimeout(upd, 0)));
+  upd();
+})();
 </script>
 </body>
 </html>
