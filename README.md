@@ -11,7 +11,7 @@ You fill it in as you go (typing or talking), hit **Copy notes**, and paste it w
 - Every field has a 🎤 button. Click it, say what you need, and Windows voice typing fills it in. Handy when you're running between rooms.
 - Names autocomplete for the whole 56-character roster (THH, SDR2, Zero, V3, and UDG). Type "tog" or "kiri" and pick the name, so nobody ends up as "Byakya Togomi" in the notes.
 - There's a cheat sheet at the bottom with all the stuff I always forget mid-trial: how long the investigation lasts, how fingerprints and gloves actually work, where every sink is, how long the freezer and sauna take to kill someone, kill limits, and the repair order.
-- An **Items** tab with spawn locations and chances for the stuff that matters in an investigation: keycards, UV flashlights, night vision, monopad drives, gloves, break-in tools, every weapon (with its damage type), poisons (with how fast they kill), traps, and restraints. Crafted items show their recipe, so you know what the killer had to collect.
+- An **Items** tab with spawn locations and chances for the stuff that matters in an investigation: keycards, UV flashlights, night vision, monopad drives, gloves, break-in tools, every weapon (with its damage type), poisons (with how fast they kill), traps, and restraints. Crafted items show their recipe, so you know what the killer had to collect. It also lists which characters start the game holding an item, like Peko's katana or Kokichi's lockpicks.
 - A **Rules** tab with the Quick Match rules boiled down to what matters mid-match.
 - It stays on top of the game. You can make it see-through or hide it with a hotkey.
 - Your notes save automatically, so closing the app by accident won't wipe them. They only clear when you hit **New trial**.

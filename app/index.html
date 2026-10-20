@@ -188,6 +188,13 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
 .to-top:hover { background: var(--accent); color: var(--accent-ink); }
 /* sit above the Copy / New trial bar on the Notes tab */
 @media (max-width: 880px) { body[data-tab="notes"] .to-top { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); } }
+
+/* Table of contents */
+.toc { margin-bottom: 2px; }
+.toc-target { scroll-margin-top: 92px; }
+#tab-notes > .toc { order: -1; }
+.item.wide { grid-column: 1 / -1; }
+.item table.start td.ch { text-align: right; white-space: normal; color: var(--accent); }
 </style>
 </head>
 <body>
@@ -466,8 +473,29 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
   <section class="panel ref" id="tab-items" role="tabpanel" hidden>
     <h2 class="panel-title">Items &amp; spawns <small>chance per container, from the guidebook</small></h2>
     <p class="howto-sub">Pink chances are the likely sources (45%+ or always there). Craft lines tell you what someone needed to gather, and where.</p>
-        <nav class="jump" aria-label="Jump to"><button type="button" data-jump="grp-0">Keycards</button><button type="button" data-jump="grp-1">UV / night vision</button><button type="button" data-jump="grp-2">Drives</button><button type="button" data-jump="grp-3">Gloves</button><button type="button" data-jump="grp-4">Break-in</button><button type="button" data-jump="grp-5">Weapons</button><button type="button" data-jump="grp-6">Poisons</button><button type="button" data-jump="grp-7">Traps</button><button type="button" data-jump="grp-8">Restraints</button></nav>
+        <nav class="jump" aria-label="Jump to"><button type="button" data-jump="grp-start">Starting items</button><button type="button" data-jump="grp-0">Keycards</button><button type="button" data-jump="grp-1">UV / night vision</button><button type="button" data-jump="grp-2">Drives</button><button type="button" data-jump="grp-3">Gloves</button><button type="button" data-jump="grp-4">Break-in</button><button type="button" data-jump="grp-5">Weapons</button><button type="button" data-jump="grp-6">Poisons</button><button type="button" data-jump="grp-7">Traps</button><button type="button" data-jump="grp-8">Restraints</button></nav>
     <p class="howto"><b>Using a drive:</b> hold it, then hold <kbd>E</kbd> on the victim’s body and pick the download option in the interaction wheel. Read the result in your monopad under <i>Downloaded data</i>.</p>
+    <h3 class="group-title" id="grp-start">Starting items (who spawns holding what)</h3>
+    <div class="item-grid">
+      <article class="item wide">
+        <p>These characters begin the game with an item. If one of these turns up at a scene, start with its owner.</p>
+        <table class="start"><tbody>
+          <tr><td>Kyoko Kirigiri</td><td class="ch">UV Flashlight, Notepad</td></tr>
+          <tr><td>Shuichi Saihara</td><td class="ch">UV Flashlight, Notepad</td></tr>
+          <tr><td>Ryoko Otonashi</td><td class="ch">Notepad</td></tr>
+          <tr><td>Mahiru Koizumi</td><td class="ch">Camera</td></tr>
+          <tr><td>K1-B0</td><td class="ch">Keebo&#x27;s Eyes (night vision)</td></tr>
+          <tr><td>Peko Pekoyama</td><td class="ch">Katana</td></tr>
+          <tr><td>Toko Fukawa</td><td class="ch">Toko Scissors</td></tr>
+          <tr><td>Kokichi Oma</td><td class="ch">Lockpick ×3</td></tr>
+          <tr><td>Miu Iruma</td><td class="ch">Screwdriver</td></tr>
+          <tr><td>Kirumi Tojo</td><td class="ch">Mop</td></tr>
+          <tr><td>Mikan Tsumiki</td><td class="ch">Medic First Aid Kit, Anti-Toxin</td></tr>
+          <tr><td>Byakuya Togami</td><td class="ch">Rubycoins ×100</td></tr>
+        </tbody></table>
+        <p class="note">Everyone else starts empty-handed.</p>
+      </article>
+    </div>
     <h3 class="group-title" id="grp-0">Keycards</h3>
     <div class="item-grid">
       <article class="item">
@@ -520,6 +548,11 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
           <tr><td>Metal filing cabinets, Staff Room</td><td class="fl">1F</td><td class="ch"><span>3%</span></td></tr>
           <tr><td>Green mesh lockers, Staff Room</td><td class="fl">1F</td><td class="ch"><span>3%</span></td></tr>
         </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>Camera</h4><div class="tags"><span class="tag">Legendary</span></div></header>
+        <p>Takes pictures of evidence, traces, notes and suspicious objects. Weight 2.</p>
+        <p class="note">Never spawns. Mahiru Koizumi starts with it, so a camera in anyone else's hands came from her.</p>
       </article>
       <article class="item">
         <header><h4>NoctiScope v0.1 (night vision)</h4><div class="tags"><span class="tag">Rare</span><span class="tag shop">Monoshop 200 rc</span></div></header>
@@ -1173,6 +1206,41 @@ document.querySelectorAll(".jump button").forEach(b => b.addEventListener("click
   b.addEventListener("click", () => window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }));
   document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => setTimeout(upd, 0)));
   upd();
+})();
+</script>
+
+<script>
+(function () {
+  function toc(panelId, headings) {
+    const panel = document.getElementById(panelId);
+    if (!panel || !headings.length) return;
+    const nav = document.createElement("nav");
+    nav.className = "jump toc";
+    nav.setAttribute("aria-label", "Contents");
+    headings.forEach((hd, i) => {
+      const target = hd.target || hd.el;
+      if (!target.id) target.id = panelId + "-s" + i;
+      target.classList.add("toc-target");
+      const b = document.createElement("button");
+      b.type = "button";
+      b.textContent = hd.label;
+      b.addEventListener("click", () => {
+        if (target.tagName === "DETAILS") target.open = true;
+        target.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+      });
+      nav.appendChild(b);
+    });
+    const after = panel.querySelector(".panel-title");
+    if (after) after.insertAdjacentElement("afterend", nav); else panel.prepend(nav);
+  }
+  const cap = s => s.charAt(0) + s.slice(1).toLowerCase();
+  toc("tab-notes", [
+    ...[...document.querySelectorAll("#form section.card")].map(s => ({ el: s, label: cap(s.querySelector("h2").textContent.trim()) })),
+    { el: document.getElementById("controls"), label: "Controls" }
+  ]);
+  ["tab-cheat", "tab-rules"].forEach(id => {
+    toc(id, [...document.querySelectorAll("#" + id + " .ref-item")].map(it => ({ el: it, label: it.querySelector("h3").textContent.replace(/\s*\(.*\)$/, "").trim() })));
+  });
 })();
 </script>
 </body>
