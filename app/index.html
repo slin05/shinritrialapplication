@@ -129,6 +129,19 @@ body { padding-block: 0 96px; }
 .wrap > header { display: none; }
 @media (max-width: 880px) { .dock { display: flex; } }
 @media (min-width: 881px) { .dock { display: none; } .wrap > header { display: flex; } }
+
+/* Tabs */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); position: sticky; top: 38px; z-index: 35; background: var(--bg); padding-top: 4px; }
+.tab { flex: 1; border: 0; border-bottom: 3px solid transparent; background: none; color: var(--muted); padding: 9px 6px 8px; font-family: var(--font-display); font-size: 16px; letter-spacing: .06em; text-transform: uppercase; border-radius: 0; }
+.tab:hover { color: var(--fg); }
+.tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+.panel { display: flex; flex-direction: column; gap: 16px; }
+.panel[hidden] { display: none !important; }
+.panel.ref { padding: 0; border: 0; background: none; }
+.panel-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 22px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.panel-title small { font-family: var(--font-body); font-size: 12px; color: var(--muted); letter-spacing: 0; text-transform: none; margin-left: 8px; }
+.panel.ref .ref-grid { padding: 0; }
+body:not([data-tab="notes"]) .dock { display: none !important; }
 </style>
 </head>
 <body>
@@ -156,6 +169,13 @@ body { padding-block: 0 96px; }
     </div>
   </header>
 
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" type="button" data-tab="notes" aria-selected="true">Notes</button>
+    <button class="tab" role="tab" type="button" data-tab="cheat" aria-selected="false">Cheat sheet</button>
+    <button class="tab" role="tab" type="button" data-tab="rules" aria-selected="false">Rules</button>
+  </nav>
+
+  <div class="panel" id="tab-notes" role="tabpanel">
   <div class="banner" id="exampleBanner" hidden>
     <span>These are <b>example notes</b> so you can see how it works. Hit <b>New trial</b> to clear them.</span>
   </div>
@@ -167,8 +187,10 @@ body { padding-block: 0 96px; }
       <pre id="out"></pre>
     </aside>
   </div>
-  <details class="ref" open id="refPanel">
-    <summary>Detective cheat sheet <small>from the Shinri Trial guidebook</small></summary>
+  </div>
+
+  <section class="panel ref" id="tab-cheat" role="tabpanel" hidden>
+    <h2 class="panel-title">Detective cheat sheet <small>from the Shinri Trial guidebook</small></h2>
     <div class="ref-grid">
       <div class="ref-item">
         <h3>Investigation timer</h3>
@@ -190,8 +212,8 @@ body { padding-block: 0 96px; }
       <div class="ref-item">
         <h3>Fingerprints</h3>
         <ul>
-          <li>Six kinds: ordinary, smeared, bloody, bloody-smeared, resin, resin-smeared. Only ordinary and bloody point to a person.</li>
-          <li>Ordinary and smeared need a UV flashlight to see. They last 18 in-game hours; bloody and resin ones last 36.</li>
+          <li>Six kinds: ordinary, smeared, bloody, bloody-smeared, tar, tar-smeared. Only ordinary and bloody point to a person.</li>
+          <li>Ordinary and smeared need a UV flashlight to see. They last 18 in-game hours; bloody and tar ones last 36.</li>
           <li>Crowbar break-ins leave no door prints but make a loud noise.</li>
           <li>Trap prints belong to whoever set it, or whoever last picked it up.</li>
         </ul>
@@ -207,7 +229,7 @@ body { padding-block: 0 96px; }
       <div class="ref-item">
         <h3>Shoeprints</h3>
         <ul>
-          <li>Bloody (blood puddle), wet (bathhouse or pool), dirty (either garden).</li>
+          <li>Bloody (blood puddle), wet (bathhouse or pool), dirty (either garden, or the dirty oil at the workbench next to the gym).</li>
           <li>They last 10 steps, and those steps fade after 12 in-game hours or 10 real minutes. UV shows them best.</li>
         </ul>
       </div>
@@ -249,9 +271,104 @@ body { padding-block: 0 96px; }
         </ul>
       </div>
     </div>
-  </details>
+  </section>
+
+  <section class="panel ref" id="tab-rules" role="tabpanel" hidden>
+    <h2 class="panel-title">Quick Match rules <small>summarized from blog.shinri-trial.com</small></h2>
+    <div class="ref-grid">
+      <div class="ref-item">
+        <h3>Kill limit &amp; accomplices</h3>
+        <ul>
+          <li>Max 2 kills per chapter, shared between you and your accomplice. Indirect help (handing over an explosive, etc.) counts.</li>
+          <li>Only one accomplice allowed.</li>
+          <li>The limit is lifted during the Escape final quest.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>Public killing</h3>
+        <ul>
+          <li>Solo: no killing with 2+ witnesses who aren't accomplices in the room.</li>
+          <li>With an accomplice: 3 people present is OK if one is your accomplice. Any extra accomplice counts as a witness.</li>
+          <li>Accidental witnesses from a botched kill don't count.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>Damage needs a reason (FD)</h3>
+        <ul>
+          <li>Valid: serious insults to you or someone close, direct threats, or self-defense / protecting someone.</li>
+          <li>Repeatedly hitting people during an investigation, or hitting a dead body, is NonRP.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>Restraints &amp; stuns</h3>
+        <ul>
+          <li>Need a real reason: they hurt you, seriously insulted you or a friend, threaten others, are resisting, or it's setup for a murder.</li>
+          <li>Max 5 minutes held per RP situation if it isn't progressing. Re-tying to reset the clock is a violation.</li>
+          <li>Holding someone in the bathhouse or freezer before a murder is allowed.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>Powergaming (PG)</h3>
+        <ul>
+          <li>No impossible feats or ignoring mechanics.</li>
+          <li>Two armed players demanding a search: comply. Resisting a clear 2-to-1 is PG, unless the group has no RP reason and is just ganging up.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>/try and /roll</h3>
+        <ul>
+          <li>Required whenever failure is possible, another player is involved, or the environment is affected.</li>
+          <li>After a fail, don't repeat the same action on the same target unless things have really changed.</li>
+          <li>Game mechanics beat /me actions (no "/me picked the lock").</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>Metagaming &amp; meta-co-op</h3>
+        <ul>
+          <li>No using info from PM, SMS, LOOC, Discord or anywhere outside the match.</li>
+          <li>No teaming up based on real-life friendships or outside deals. Co-op needs an in-RP reason.</li>
+          <li>Received outside info? Don't use it and report it, and you're fine.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>NonRP &amp; leaving</h3>
+        <ul>
+          <li>Stay in character. No talking about lag, rules or real life in chat during an active scene.</li>
+          <li>Don't disconnect or go AFK mid-scene unless everyone involved agrees.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>Chat &amp; voice</h3>
+        <ul>
+          <li>English only (single phrases in other languages are fine as RP).</li>
+          <li>No voice changers, no Soundpad or similar soundboards.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>Leaving &amp; declining matches</h3>
+        <ul>
+          <li>Penalties escalate each time and reset 24h after your first one.</li>
+          <li>Leaving mid-match: warning → 30 min → 2 h → 12 h → 24 h.</li>
+          <li>Declining a found match: 2 warnings, then 3 min → 10 min → 30 min → 3 h → 24 h.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>Reports &amp; appeals</h3>
+        <ul>
+          <li>Appeals and complaints must be sent within 48 hours, or they're rejected.</li>
+          <li>Minor, harmless violations can be dismissed. Spectator reports only count for serious issues.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>Third-party software</h3>
+        <ul>
+          <li>Only programs the administration has explicitly approved are allowed. Input-emulating tools, macros and client mods are a permanent ban.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
   <p class="tip hotkeys"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd> show/hide · <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> opacity · 🎤 or <kbd>Win</kbd>+<kbd>H</kbd> to dictate</p>
-  <p class="tip">Your draft stays saved in the app until you start a new trial. Cheat sheet summarized from the Shinri Trial Guidebook at kirigiris.press.</p>
+  <p class="tip">Your draft stays saved in the app until you start a new trial. Cheat sheet summarized from the Shinri Trial Guidebook (kirigiris.press); rules from blog.shinri-trial.com.</p>
 </div>
 
 <div class="sheet" id="copySheet" hidden role="dialog" aria-label="Copy notes manually">
@@ -548,6 +665,23 @@ body { padding-block: 0 96px; }
   pin.addEventListener("click", () => { const on = !pin.classList.contains("on"); pin.classList.toggle("on", on); o.setPinned(on); });
   document.getElementById("min").addEventListener("click", () => o.minimize());
   document.getElementById("close").addEventListener("click", () => o.close());
+})();
+</script>
+
+<script>
+(function () {
+  const tabs = [...document.querySelectorAll(".tab")];
+  function show(name) {
+    tabs.forEach(t => t.setAttribute("aria-selected", String(t.dataset.tab === name)));
+    ["notes", "cheat", "rules"].forEach(n => { document.getElementById("tab-" + n).hidden = n !== name; });
+    document.body.dataset.tab = name;
+    window.scrollTo(0, 0);
+    try { localStorage.setItem("shinri-tab", name); } catch (e) {}
+  }
+  tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.tab)));
+  let start = "notes";
+  try { start = localStorage.getItem("shinri-tab") || "notes"; } catch (e) {}
+  show(["notes", "cheat", "rules"].includes(start) ? start : "notes");
 })();
 </script>
 </body>
