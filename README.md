@@ -92,12 +92,7 @@ npm start        # run it
 npm run dist     # build the .exe files into dist/
 ```
 
-GitHub builds the `.exe` files automatically every time something gets pushed to `main`. To put out a proper release, tag it:
-
-```bash
-git tag v1.0.0
-git push --tags
-```
+GitHub builds the `.exe` files automatically every time something gets pushed to `main`. To put out a new release, bump `"version"` in `package.json` (say, from `1.0.0` to `1.0.1`) and push. The build notices the new number and publishes the release on its own.
 
 If you want to poke around the code, `main.js` handles the window, hotkeys, and voice typing, `preload.js` connects the window to the page, and everything you actually see is in `app/index.html`.
 

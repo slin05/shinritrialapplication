@@ -3,7 +3,6 @@ name: Build Windows app
 on:
   push:
     branches: [main]
-    tags: ["v*"]
   workflow_dispatch:
 
 permissions:
@@ -17,7 +16,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install
         run: npm install
@@ -29,11 +28,38 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ShinriTrialNotes-windows
-          path: |
-            dist/*.exe
+          path: dist/*.exe
 
-      - name: Publish release (tags only)
-        if: startsWith(github.ref, 'refs/tags/v')
+      # Publishes a release the first time a new version number lands on main.
+      # To ship an update: bump "version" in package.json and push.
+      - name: Check whether this version is already released
+        id: ver
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="v$(node -p "require('./package.json').version")"
+          echo "tag=$VERSION" >> "$GITHUB_OUTPUT"
+          if gh release view "$VERSION" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish release
+        if: steps.ver.outputs.exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          name: Shinri Trial Notes ${{ steps.ver.outputs.tag }}
+          body: |
+            Download one of these:
+
+            - **ShinriTrialNotes-Setup** installs the app with a Start menu shortcut.
+            - **ShinriTrialNotes-Portable** runs straight away, with no install.
+
+            Windows SmartScreen may warn you the first time because the app isn't code-signed. Click **More info → Run anyway**.
+
+            Set GMod's Display Mode to **Windowed (no border)** so the notes can sit on top of the game.
           files: dist/*.exe
