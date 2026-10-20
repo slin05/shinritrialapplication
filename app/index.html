@@ -142,6 +142,15 @@ body { padding-block: 0 96px; }
 .panel-title small { font-family: var(--font-body); font-size: 12px; color: var(--muted); letter-spacing: 0; text-transform: none; margin-left: 8px; }
 .panel.ref .ref-grid { padding: 0; }
 body:not([data-tab="notes"]) .dock { display: none !important; }
+
+/* Controls */
+.controls { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+.controls summary { cursor: pointer; padding: 10px 16px; font-family: var(--font-display); font-size: 18px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.ctl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px 20px; padding: 0 16px 14px; }
+.ctl-group h3 { margin: 0 0 6px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.ctl-group dl { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 5px 10px; align-items: baseline; font-size: 13.5px; }
+.ctl-group dt { color: var(--fg); white-space: nowrap; font-weight: 500; }
+.ctl-group dd { margin: 0; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -187,6 +196,45 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
       <pre id="out"></pre>
     </aside>
   </div>
+
+  <details class="controls" id="controls" open>
+    <summary>Controls</summary>
+    <div class="ctl-grid">
+      <div class="ctl-group">
+        <h3>Anywhere, even in-game</h3>
+        <dl>
+          <dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd></dt><dd>Show or hide this window</dd>
+          <dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>↑</kbd></dt><dd>More solid</dd>
+          <dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>↓</kbd></dt><dd>More see-through</dd>
+        </dl>
+      </div>
+      <div class="ctl-group">
+        <h3>Title bar</h3>
+        <dl>
+          <dt>Drag the bar</dt><dd>Move the window (it remembers where)</dd>
+          <dt>Slider</dt><dd>See-through amount</dd>
+          <dt>📌</dt><dd>Stay on top of the game (pink = on)</dd>
+          <dt>– / ✕</dt><dd>Minimize / close (notes are kept)</dd>
+        </dl>
+      </div>
+      <div class="ctl-group">
+        <h3>Filling in notes</h3>
+        <dl>
+          <dt>🎤</dt><dd>Talk into that field (or click a field and press <kbd>Win</kbd>+<kbd>H</kbd>)</dd>
+          <dt><kbd>Enter</kbd> / <kbd>Tab</kbd></dt><dd>Pick the highlighted name (<kbd>↑</kbd> <kbd>↓</kbd> to move)</dd>
+          <dt><kbd>Esc</kbd></dt><dd>Close the name list</dd>
+          <dt>Commas</dt><dd>Separate names in list fields</dd>
+        </dl>
+      </div>
+      <div class="ctl-group">
+        <h3>Buttons</h3>
+        <dl>
+          <dt>Copy notes</dt><dd>Copies the formatted block, ready to paste</dd>
+          <dt>New trial</dt><dd>Click twice to clear everything for the next chapter</dd>
+        </dl>
+      </div>
+    </div>
+  </details>
   </div>
 
   <section class="panel ref" id="tab-cheat" role="tabpanel" hidden>
@@ -367,7 +415,6 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
       </div>
     </div>
   </section>
-  <p class="tip hotkeys"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd> show/hide · <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> opacity · 🎤 or <kbd>Win</kbd>+<kbd>H</kbd> to dictate</p>
   <p class="tip">Your draft stays saved in the app until you start a new trial. Cheat sheet summarized from the Shinri Trial Guidebook (kirigiris.press); rules from blog.shinri-trial.com.</p>
 </div>
 
@@ -682,6 +729,14 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
   let start = "notes";
   try { start = localStorage.getItem("shinri-tab") || "notes"; } catch (e) {}
   show(["notes", "cheat", "rules"].includes(start) ? start : "notes");
+})();
+</script>
+
+<script>
+(function () {
+  const d = document.getElementById("controls");
+  try { if (localStorage.getItem("shinri-controls") === "closed") d.open = false; } catch (e) {}
+  d.addEventListener("toggle", () => { try { localStorage.setItem("shinri-controls", d.open ? "open" : "closed"); } catch (e) {} });
 })();
 </script>
 </body>

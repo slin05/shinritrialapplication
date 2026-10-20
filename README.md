@@ -39,7 +39,7 @@ When you're ready to share, hit **Copy notes** and paste.
 
 ### Hotkeys
 
-These work even while you're in the game.
+There's also a **Controls** section at the bottom of the Notes tab if you forget any of these. The hotkeys work even while you're in the game.
 
 | Keys | What it does |
 | --- | --- |
