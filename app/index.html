@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:">
+<title>Shinri Trial Notes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: class-trial case file — form on the left, live copy-ready notes block pinned on the right; stacks on phones. Deliberately single dark theme. */
+:root {
+  --bg: #0e0b10;
+  --panel: #18131b;
+  --panel-2: #211a25;
+  --line: #3a2e3f;
+  --fg: #f1e9f0;
+  --muted: #a594a6;
+  --accent: #ff2e88;      /* Danganronpa blood pink */
+  --accent-ink: #1a0610;
+  --ok: #57d9a3;
+  --font-display: "Anton", "Impact", "Arial Narrow", sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 96px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; border-bottom: 2px solid var(--accent); padding-bottom: 12px; }
+h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(30px, 6vw, 46px); letter-spacing: .02em; margin: 0; line-height: 1; text-transform: uppercase; }
+h1 span { color: var(--accent); }
+.sub { color: var(--muted); margin: 6px 0 0; font-size: 13px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+button { font: inherit; cursor: pointer; border-radius: 6px; }
+.btn { border: 1px solid var(--line); background: var(--panel-2); color: var(--fg); padding: 8px 14px; font-weight: 500; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+.btn.danger.armed { background: #5a1030; border-color: var(--accent); }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.banner { background: var(--panel-2); border: 1px dashed var(--accent); border-radius: 8px; padding: 10px 14px; font-size: 13.5px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
+.tip { color: var(--muted); font-size: 13px; }
+kbd { font-family: var(--font-mono); font-size: 12px; background: var(--panel-2); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 1px 5px; color: var(--fg); }
+
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); gap: 20px; align-items: start; }
+@media (max-width: 880px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+
+.form { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+section.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+section.card h2 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 20px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+
+.prints { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 14px; }
+@media (max-width: 560px) { .prints { grid-template-columns: minmax(0, 1fr); } }
+.print { display: grid; grid-template-columns: 28px 64px minmax(0, 1fr); gap: 6px; align-items: center; }
+.print .n { font-family: var(--font-mono); color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; font-size: 13px; }
+
+.row { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 10px; align-items: center; }
+@media (max-width: 560px) { .row { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+.row label { font-size: 13px; color: var(--muted); font-weight: 500; }
+
+.field { position: relative; min-width: 0; display: flex; gap: 6px; }
+input[type=text] {
+  width: 100%; min-width: 0; background: var(--bg); color: var(--fg);
+  border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; font: inherit; font-size: 14px;
+}
+input[type=text]::placeholder { color: #6c5c6e; }
+input[type=text]:focus { border-color: var(--accent); outline: none; }
+.mic { flex: none; width: 34px; border: 1px solid var(--line); background: var(--panel-2); color: var(--muted); font-size: 14px; }
+.mic.live { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+.ac { position: absolute; left: 0; right: 0; top: calc(100% + 4px); z-index: 20; background: var(--panel-2); border: 1px solid var(--accent); border-radius: 6px; max-height: 220px; overflow-y: auto; }
+.ac div { padding: 6px 10px; font-size: 14px; cursor: pointer; display: flex; justify-content: space-between; gap: 8px; }
+.ac div small { color: var(--muted); font-size: 11px; letter-spacing: .05em; }
+.ac div.on, .ac div:hover { background: var(--accent); color: var(--accent-ink); }
+.ac div.on small, .ac div:hover small { color: var(--accent-ink); }
+
+aside.out { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); background: var(--panel); border: 1px solid var(--line); border-radius: 10px; display: flex; flex-direction: column; min-width: 0; max-height: calc(100vh - 40px); }
+@media (max-width: 880px) { aside.out { position: static; max-height: none; } }
+.out-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.out-head span { font-family: var(--font-display); letter-spacing: .06em; text-transform: uppercase; font-size: 16px; }
+pre#out { margin: 0; padding: 12px; overflow: auto; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.5; color: var(--fg); white-space: pre; min-height: 200px; }
+.copied { color: var(--ok); font-size: 13px; }
+
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: none; background: var(--panel); border-top: 1px solid var(--accent);
+  padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+@media (max-width: 880px) { .dock { display: flex; gap: 8px; } .dock .btn { flex: 1; } }
+.ref { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 0; }
+.ref summary { cursor: pointer; padding: 12px 16px; font-family: var(--font-display); font-size: 20px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.ref summary small { font-family: var(--font-body); font-size: 12px; color: var(--muted); letter-spacing: 0; text-transform: none; margin-left: 8px; }
+.ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; padding: 0 16px 16px; }
+.ref-item { background: var(--panel-2); border-radius: 8px; padding: 12px 14px; min-width: 0; }
+.ref-item h3 { margin: 0 0 6px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--fg); }
+.ref-item p, .ref-item ul { margin: 0; font-size: 13.5px; color: var(--muted); }
+.ref-item ul { padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.timer { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.timer label { font-size: 13px; color: var(--muted); }
+.timer input { width: 64px; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; font: inherit; }
+.timer output { font-family: var(--font-display); font-size: 22px; color: var(--accent); letter-spacing: .03em; font-variant-numeric: tabular-nums; }
+.sheet { position: fixed; inset: 0; z-index: 50; background: rgba(8, 5, 10, .78); display: flex; align-items: center; justify-content: center;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.sheet-box { background: var(--panel); border: 1px solid var(--accent); border-radius: 10px; padding: 16px; width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 10px; }
+.sheet-box p { margin: 0; font-size: 14px; }
+.sheet-box textarea { width: 100%; height: 50vh; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 10px; font-family: var(--font-mono); font-size: 12.5px; resize: vertical; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<style>
+/* Overlay window chrome */
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body { padding-block: 0 96px; }
+.titlebar { position: sticky; top: 0; z-index: 40; margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))) 14px;
+  display: flex; align-items: center; gap: 8px; padding: 6px 8px 6px 14px; background: var(--panel); border-bottom: 1px solid var(--line);
+  -webkit-app-region: drag; user-select: none; }
+.titlebar .name { font-family: var(--font-display); letter-spacing: .06em; text-transform: uppercase; font-size: 15px; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.titlebar .name b { color: var(--accent); font-weight: 400; }
+.titlebar .ctl { -webkit-app-region: no-drag; display: flex; align-items: center; gap: 6px; }
+.titlebar input[type=range] { width: 80px; accent-color: var(--accent); }
+.tb-btn { width: 30px; height: 26px; border: 1px solid var(--line); background: var(--panel-2); color: var(--muted); font-size: 13px; line-height: 1; padding: 0; }
+.tb-btn:hover { color: var(--fg); border-color: var(--accent); }
+.tb-btn.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.tb-btn.close:hover { background: #c4234f; color: #fff; }
+.hotkeys { font-size: 12px; color: var(--muted); }
+.wrap > header { display: none; }
+@media (max-width: 880px) { .dock { display: flex; } }
+@media (min-width: 881px) { .dock { display: none; } .wrap > header { display: flex; } }
+</style>
+</head>
+<body>
+
+
+
+<div class="titlebar">
+  <span class="name">Shinri Trial <b>Notes</b></span>
+  <div class="ctl">
+    <input type="range" id="opacity" min="30" max="100" step="5" value="95" aria-label="Window opacity" title="Opacity (Ctrl+Shift+Up / Down)">
+    <button class="tb-btn on" id="pin" type="button" aria-label="Keep on top" title="Keep on top">📌</button>
+    <button class="tb-btn" id="min" type="button" aria-label="Minimize" title="Minimize">–</button>
+    <button class="tb-btn close" id="close" type="button" aria-label="Close" title="Close">✕</button>
+  </div>
+</div>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Shinri Trial <span>Notes</span></h1>
+      <p class="sub">Click a field and talk (<kbd>Win</kbd>+<kbd>H</kbd>), or type. Names autocomplete. Copy gives you the community format.</p>
+    </div>
+    <div class="actions">
+      <button class="btn danger" id="reset" type="button">New trial</button>
+      <button class="btn primary" id="copy" type="button">Copy notes</button>
+    </div>
+  </header>
+
+  <div class="banner" id="exampleBanner" hidden>
+    <span>These are <b>example notes</b> so you can see how it works. Hit <b>New trial</b> to clear them.</span>
+  </div>
+
+  <div class="grid">
+    <div class="form" id="form"></div>
+    <aside class="out" aria-label="Formatted notes">
+      <div class="out-head"><span>Notes block</span><span class="copied" id="copied" aria-live="polite"></span></div>
+      <pre id="out"></pre>
+    </aside>
+  </div>
+  <details class="ref" open id="refPanel">
+    <summary>Detective cheat sheet <small>from the Shinri Trial guidebook</small></summary>
+    <div class="ref-grid">
+      <div class="ref-item">
+        <h3>Investigation timer</h3>
+        <p>7 min at the start, +2 min per opened floor, capped at 15.</p>
+        <div class="timer">
+          <label for="floors">Floors opened</label>
+          <input type="number" id="floors" min="0" max="4" value="0" inputmode="numeric">
+          <output id="timerOut" for="floors">7 min</output>
+        </div>
+      </div>
+      <div class="ref-item">
+        <h3>Body discovery</h3>
+        <ul>
+          <li>Counts once 3 different characters look at it. The killer can be one of them, but never first, and only after 20 real seconds.</li>
+          <li>Auto-alert if nobody finds it within 5 real minutes.</li>
+          <li>Monokuma File time of death is accurate to ±1 in-game minute.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>Fingerprints</h3>
+        <ul>
+          <li>Six kinds: ordinary, smeared, bloody, bloody-smeared, resin, resin-smeared. Only ordinary and bloody point to a person.</li>
+          <li>Ordinary and smeared need a UV flashlight to see. They last 18 in-game hours; bloody and resin ones last 36.</li>
+          <li>Crowbar break-ins leave no door prints but make a loud noise.</li>
+          <li>Trap prints belong to whoever set it, or whoever last picked it up.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>Gloves &amp; bloody hands</h3>
+        <ul>
+          <li>Reusable gloves smear every print. Disposable ones smear for 10 uses, then tear and leave normal prints.</li>
+          <li>"Bloody hands" only appears from a melee hit before the investigation, never from dragging, punching or picking up a weapon.</li>
+          <li>Hitting in gloves bloodies the gloves, not the hands. Bloody gloves can't be washed in a sink, only wiped with a rag.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>Shoeprints</h3>
+        <ul>
+          <li>Bloody (blood puddle), wet (bathhouse or pool), dirty (either garden).</li>
+          <li>They last 10 steps, and those steps fade after 12 in-game hours or 10 real minutes. UV shows them best.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>Sinks (where they wash up)</h3>
+        <p>Restrooms by the gym and dormitory, abandoned floor, 2F, 4F, medical office, laundry, kitchen, dorm rooms, art room back room, chemistry lab.</p>
+      </div>
+      <div class="ref-item">
+        <h3>Environmental deaths</h3>
+        <ul>
+          <li>Freezer: about 3:31 real time. Sauna: about 2:28. The killer is whoever shut the door.</li>
+          <li>Starved or sleepless while restrained: whoever applied the restraints.</li>
+          <li>Pushed from a height: whoever released the victim, not whoever tied them up.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>Rules that narrow suspects</h3>
+        <ul>
+          <li>Max 2 kills per killer (or killer + accomplice) per chapter. 3+ bodies means at least two separate killers.</li>
+          <li>Killing with more than one witness is forbidden, so a group of 3+ is safe.</li>
+          <li>A tied-up "alibi" is weak: killers can bind themselves, but can only remove a bag on their own.</li>
+          <li>Hits after death leave no wounds. Sleep effects are always listed after injuries.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>Repair stages (log their times)</h3>
+        <ul>
+          <li>1F electrical panel → 2F supercomputer → 3F air purifier → 4F escape capsules.</li>
+          <li>Opening times catch fake alibis: nobody was "by the boiler room" before it opened.</li>
+          <li>The 3F utility room links the gym bridge, 3F, the library archive vent, the 2F men's restroom, the pool and the boiler room.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
+        <h3>Monokuma events</h3>
+        <ul>
+          <li>Masquerade: everyone gets a disguise. A disguise without gloves leaves smeared bloody prints.</li>
+          <li>Blackout: lights out across the whole academy.</li>
+          <li>Teleport: everyone sent to random spots.</li>
+        </ul>
+      </div>
+    </div>
+  </details>
+  <p class="tip hotkeys"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd> show/hide · <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> opacity · 🎤 or <kbd>Win</kbd>+<kbd>H</kbd> to dictate</p>
+  <p class="tip">Your draft stays saved in the app until you start a new trial. Cheat sheet summarized from the Shinri Trial Guidebook at kirigiris.press.</p>
+</div>
+
+<div class="sheet" id="copySheet" hidden role="dialog" aria-label="Copy notes manually">
+  <div class="sheet-box">
+    <p><b>Press Ctrl+C now</b> — the notes are already selected. (Your browser blocked automatic copying.)</p>
+    <textarea id="copyText" readonly spellcheck="false"></textarea>
+    <button class="btn primary" id="copyClose" type="button">Done</button>
+  </div>
+</div>
+
+<div class="dock">
+  <button class="btn danger" id="reset2" type="button">New trial</button>
+  <button class="btn primary" id="copy2" type="button">Copy notes</button>
+</div>
+
+<script>
+(function () {
+  const canDictate = !!(window.overlay && window.overlay.dictate);
+  // ---------- cast list for autocomplete ----------
+  // Shinri Trial's 56-character roster (from the guidebook's Characters section)
+  const CAST = {
+    THH: ["Makoto Naegi","Byakuya Togami","Kiyotaka Ishimaru","Kyoko Kirigiri","Sayaka Maizono","Celestia Ludenberg","Junko Enoshima","Toko Fukawa","Aoi Asahina","Sakura Ogami","Hifumi Yamada","Leon Kuwata","Yasuhiro Hagakure","Mukuro Ikusaba","Chihiro Fujisaki","Mondo Owada"],
+    SDR2: ["Hajime Hinata","Nagito Komaeda","Gundham Tanaka","Fuyuhiko Kuzuryu","Ibuki Mioda","Sonia Nevermind","Chiaki Nanami","Mikan Tsumiki","Peko Pekoyama","Mahiru Koizumi","Akane Owari","Hiyoko Saionji","Imposter (Twogami)","Nekomaru Nidai","Teruteru Hanamura","Kazuichi Soda"],
+    Zero: ["Ryoko Otonashi"],
+    V3: ["Shuichi Saihara","Kokichi Oma","K1-B0","Kaito Momota","Rantaro Amami","Korekiyo Shinguji","Gonta Gokuhara","Kaede Akamatsu","Maki Harukawa","Tenko Chabashira","Miu Iruma","Himiko Yumeno","Kirumi Tojo","Tsumugi Shirogane","Angie Yonaga","Ryoma Hoshi"],
+    UDG: ["Komaru Naegi","Jataro Kemuri","Masaru Daimon","Nagisa Shingetsu","Kotoko Utsugi","Monaca Towa"]
+  };
+  const NAMES = [];
+  for (const g in CAST) CAST[g].forEach(n => NAMES.push({ n, g }));
+
+  // ---------- schema (mirrors the community format exactly) ----------
+  const LOCS = ["Workbench","Medical workbench","Boiler Room","Kitchen (knife stand)","Incinerator","Staff Room","Technical Rooms"];
+  const INV = [
+    ["victim","Whose murder are we investigating?"],
+    ["time","Time of discovery / Time Monokuma announced the body"],
+    ["witnesses","Three witnesses"],
+    ["weapon","Murder weapon"],
+    ["location","Murder location"]
+  ];
+  const EVENTS = ["Masquerade","Blackout","Teleport"];
+  const OTHER = [
+    ["gloves","Who has / had gloves?"],
+    ["nv","Who has / had night vision?"],
+    ["exit","Time of exit after the first trial"]
+  ];
+
+  const EXAMPLE = {
+    "fp1a":"1","fp1b":"Byakuya Togami","fp2a":"1","fp2b":"Kyoko Kirigiri","fp3a":"2","fp3b":"Leon Kuwata",
+    "loc0":"Byakuya Togami, Leon Kuwata","loc3":"Leon Kuwata","loc4":"none",
+    "inv_victim":"Sayaka Maizono","inv_time":"14:20 / 14:23","inv_witnesses":"Makoto Naegi, Aoi Asahina, Hifumi Yamada",
+    "inv_weapon":"Kitchen knife","inv_location":"Staff Room",
+    "ev0":"No","ev1":"Yes, around 14:05","ev2":"No",
+    "oth_gloves":"Leon Kuwata (dropped them by the incinerator)","oth_nv":"nobody yet","oth_exit":""
+  };
+
+  const KEY = "shinri-notes-v1";
+  let state = {};
+  let isExample = false;
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (saved && saved.fields) { state = saved.fields; isExample = !!saved.example; }
+    else { state = Object.assign({}, EXAMPLE); isExample = true; }
+  } catch (e) { state = Object.assign({}, EXAMPLE); isExample = true; }
+
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify({ fields: state, example: isExample })); } catch (e) {}
+  }
+
+  // ---------- build form ----------
+  const form = document.getElementById("form");
+  const el = (tag, attrs = {}, kids = []) => {
+    const e = document.createElement(tag);
+    for (const k in attrs) {
+      if (k === "text") e.textContent = attrs[k];
+      else e.setAttribute(k, attrs[k]);
+    }
+    kids.forEach(c => e.appendChild(c));
+    return e;
+  };
+
+  function input(id, opts = {}) {
+    const i = el("input", { type: "text", id, autocomplete: "off", spellcheck: "false", placeholder: opts.ph || "" });
+    i.value = state[id] || "";
+    i.addEventListener("input", () => { state[id] = i.value; onEdit(); });
+    if (opts.names) { attachAC(i); i.dataset.list = "1"; }
+    const wrap = el("div", { class: "field" }, [i]);
+    if (opts.mic !== false) addMic(wrap, i, id);
+    return wrap;
+  }
+
+  function card(title, kids) { return el("section", { class: "card" }, [el("h2", { text: title }), ...kids]); }
+  function row(label, id, opts) {
+    const lab = el("label", { for: id, text: label });
+    return el("div", { class: "row" }, [lab, input(id, opts)]);
+  }
+
+  // fingerprints
+  const prints = el("div", { class: "prints" });
+  for (let i = 1; i <= 16; i++) {
+    const a = el("input", { type: "text", id: "fp" + i + "a", autocomplete: "off", placeholder: "#", "aria-label": "Fingerprint " + i + " number" });
+    a.value = state["fp" + i + "a"] || "";
+    a.addEventListener("input", () => { state["fp" + i + "a"] = a.value; onEdit(); });
+    const b = input("fp" + i + "b", { names: true, ph: "Whose print" });
+    b.querySelector("input").setAttribute("aria-label", "Fingerprint " + i + " owner");
+    prints.appendChild(el("div", { class: "print" }, [el("span", { class: "n", text: i + "." }), a, b]));
+  }
+  form.appendChild(card("Fingerprints", [prints]));
+  form.appendChild(card("Fingerprints by location", LOCS.map((l, i) => row(l, "loc" + i, { names: true, ph: "Names, comma separated" }))));
+  form.appendChild(card("Investigation", INV.map(([k, l]) => row(l, "inv_" + k, { names: ["victim","witnesses"].includes(k) }))));
+  form.appendChild(card("Monokuma events", EVENTS.map((l, i) => row(l, "ev" + i, {}))));
+  form.appendChild(card("Other", OTHER.map(([k, l]) => row(l, "oth_" + k, { names: k !== "exit" }))));
+
+  // ---------- output ----------
+  const out = document.getElementById("out");
+  const v = id => (state[id] || "").trim();
+  const lv = (label, id) => { const x = v(id); return x ? label + ": " + x : label + ":"; };
+
+  function build() {
+    const L = [];
+    L.push("════════════════════════════════════════", "");
+    L.push("── FINGERPRINTS: ──────────────────────", "");
+    for (let i = 1; i <= 16; i++) {
+      const num = (i < 10 ? " " : "") + i + ".";
+      const a = v("fp" + i + "a"), b = v("fp" + i + "b");
+      L.push((num + " # " + a + (a ? " " : "") + "-" + (b ? " " + b : "")).replace(/\s+$/, ""));
+    }
+    L.push("", "── FINGERPRINTS BY LOCATION: ──────────", "");
+    LOCS.forEach((l, i) => L.push(lv(l, "loc" + i)));
+    L.push("", "── INVESTIGATION: ─────────────────────", "");
+    INV.forEach(([k, l], idx) => { L.push(lv(l, "inv_" + k)); if (idx < INV.length - 1) L.push(""); });
+    L.push("", "── MONOKUMA EVENTS: ───────────────────", "");
+    EVENTS.forEach((l, i) => { L.push(lv(l, "ev" + i)); if (i < EVENTS.length - 1) L.push(""); });
+    L.push("", "── OTHER: ─────────────────────────────", "");
+    OTHER.forEach(([k, l], i) => { L.push(lv(l, "oth_" + k)); if (i < OTHER.length - 1) L.push(""); });
+    return L.join("\n");
+  }
+  function render() { out.textContent = build(); document.getElementById("exampleBanner").hidden = !isExample; }
+  function onEdit() { save(); render(); }
+
+  // ---------- copy ----------
+  const copiedEl = document.getElementById("copied");
+  const sheet = document.getElementById("copySheet");
+  const sheetText = document.getElementById("copyText");
+  document.getElementById("copyClose").addEventListener("click", () => { sheet.hidden = true; });
+  function done() { copiedEl.textContent = "Copied ✓"; flash("Copied ✓"); setTimeout(() => copiedEl.textContent = "", 2000); }
+  function flash(msg) {
+    ["copy", "copy2"].forEach(id => {
+      const b = document.getElementById(id); b.textContent = msg;
+      setTimeout(() => b.textContent = "Copy notes", 1600);
+    });
+  }
+  // Method 1: hidden textarea + execCommand (works inside embedded frames where the Clipboard API is blocked)
+  function execCopy(text) {
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.setAttribute("readonly", "");
+    ta.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;";
+    document.body.appendChild(ta);
+    ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    ta.remove();
+    return ok;
+  }
+  // Method 3: show the text already selected so Ctrl+C always works
+  function manual(text) {
+    sheetText.value = text; sheet.hidden = false;
+    sheetText.focus(); sheetText.select();
+  }
+  function copy() {
+    const text = build();
+    if (execCopy(text)) { done(); return; }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, () => manual(text));
+        return;
+      }
+    } catch (e) {}
+    manual(text);
+  }
+  document.getElementById("copy").addEventListener("click", copy);
+  document.getElementById("copy2").addEventListener("click", copy);
+
+  // ---------- reset with in-page confirm ----------
+  function wireReset(btn) {
+    let timer;
+    btn.addEventListener("click", () => {
+      if (!btn.classList.contains("armed")) {
+        btn.classList.add("armed"); btn.textContent = "Clear everything?";
+        timer = setTimeout(() => { btn.classList.remove("armed"); btn.textContent = "New trial"; }, 3000);
+        return;
+      }
+      clearTimeout(timer);
+      btn.classList.remove("armed"); btn.textContent = "New trial";
+      state = {}; isExample = false;
+      document.querySelectorAll("#form input").forEach(i => i.value = "");
+      onEdit();
+      const first = document.getElementById("inv_victim"); if (first) first.focus();
+    });
+  }
+  wireReset(document.getElementById("reset"));
+  wireReset(document.getElementById("reset2"));
+
+  // ---------- name autocomplete (completes the part after the last comma) ----------
+  function attachAC(inp) {
+    let box = null, items = [], idx = 0;
+    const close = () => { if (box) { box.remove(); box = null; } };
+    const seg = () => {
+      const val = inp.value, cut = val.lastIndexOf(",");
+      return { head: cut >= 0 ? val.slice(0, cut + 1) + " " : "", q: val.slice(cut + 1).trim() };
+    };
+    const pick = (name) => {
+      const { head } = seg();
+      inp.value = head.replace(/\s+$/, " ").replace(/^\s/, "") + name;
+      state[inp.id] = inp.value; onEdit(); close(); inp.focus();
+    };
+    const show = () => {
+      const { q } = seg();
+      close();
+      if (q.length < 2) return;
+      const ql = q.toLowerCase();
+      items = NAMES.filter(x => x.n.toLowerCase().split(/[\s()-]+/).some(w => w.startsWith(ql)) || x.n.toLowerCase().startsWith(ql)).slice(0, 8);
+      if (!items.length || (items.length === 1 && items[0].n.toLowerCase() === ql)) return;
+      idx = 0;
+      box = el("div", { class: "ac", role: "listbox" });
+      items.forEach((x, i) => {
+        const d = el("div", { role: "option" }, [document.createTextNode(x.n), el("small", { text: x.g })]);
+        if (i === 0) d.classList.add("on");
+        d.addEventListener("mousedown", e => { e.preventDefault(); pick(x.n); });
+        box.appendChild(d);
+      });
+      inp.parentElement.appendChild(box);
+    };
+    inp.addEventListener("input", show);
+    inp.addEventListener("blur", () => setTimeout(close, 100));
+    inp.addEventListener("keydown", e => {
+      if (!box) return;
+      const opts = box.children;
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        opts[idx].classList.remove("on");
+        idx = (idx + (e.key === "ArrowDown" ? 1 : opts.length - 1)) % opts.length;
+        opts[idx].classList.add("on"); opts[idx].scrollIntoView({ block: "nearest" });
+      } else if (e.key === "Enter" || e.key === "Tab") {
+        e.preventDefault(); pick(items[idx].n);
+      } else if (e.key === "Escape") close();
+    });
+  }
+
+  // ---------- per-field mic: focuses the field and starts Windows voice typing ----------
+  function addMic(wrap, inp, id) {
+    if (!canDictate) return;
+    const b = el("button", { type: "button", class: "mic", "aria-label": "Dictate into this field", title: "Dictate into this field (Windows voice typing)" });
+    b.textContent = "🎤";
+    // keep focus in the text field when the button is pressed
+    b.addEventListener("mousedown", e => e.preventDefault());
+    b.addEventListener("click", () => {
+      inp.focus();
+      // in a list field that already has text, start a new entry after a comma
+      const sep = inp.dataset.list ? ", " : " ";
+      if (inp.value.trim() && !/[,\s]$/.test(inp.value)) {
+        inp.value = inp.value.replace(/\s+$/, "") + sep;
+        state[id] = inp.value; onEdit();
+      }
+      const end = inp.value.length;
+      inp.setSelectionRange(end, end);
+      b.classList.add("live");
+      const off = () => { b.classList.remove("live"); inp.removeEventListener("blur", off); };
+      inp.addEventListener("blur", off);
+      window.overlay.dictate();
+    });
+    wrap.appendChild(b);
+  }
+
+  // investigation timer
+  const floors = document.getElementById("floors"), timerOut = document.getElementById("timerOut");
+  function updTimer() {
+    const n = Math.max(0, parseInt(floors.value, 10) || 0);
+    timerOut.textContent = Math.min(15, 7 + 2 * n) + " min";
+  }
+  floors.addEventListener("input", updTimer); updTimer();
+
+  render();
+})();
+</script>
+
+<script>
+(function () {
+  const o = window.overlay; if (!o) return;
+  const op = document.getElementById("opacity"), pin = document.getElementById("pin");
+  const apply = s => { op.value = Math.round(s.opacity * 100); pin.classList.toggle("on", s.pinned); };
+  o.getState().then(apply);
+  o.onState(apply);
+  op.addEventListener("input", () => o.setOpacity(op.value / 100));
+  pin.addEventListener("click", () => { const on = !pin.classList.contains("on"); pin.classList.toggle("on", on); o.setPinned(on); });
+  document.getElementById("min").addEventListener("click", () => o.minimize());
+  document.getElementById("close").addEventListener("click", () => o.close());
+})();
+</script>
+</body>
+</html>

@@ -1,62 +1,56 @@
-# shinritrialapplication
+# Shinri Trial Notes
 
-An always-on-top notes overlay for **Shinri Trial**, the Danganronpa roleplay gamemode in Garry's Mod.
+I made this because I kept losing time during investigations. You've got somewhere between 7 and 15 minutes to figure out whose prints are where, who saw what, and whether that blackout happened before or after the murder. Alt-tabbing to Notepad mid-investigation kept costing me, so I made a little window that sits on top of GMod with our community note format already in it.
 
-During an investigation you have 7 to 15 minutes to track fingerprints, witnesses, alibis and Monokuma events. Alt-tabbing to Notepad costs time. This app keeps the community's agreed note format on top of the game, lets you fill it in by voice or keyboard, and copies the finished notes in one click.
+You fill it in as you go (typing or talking), hit **Copy notes**, and paste it wherever your group shares notes. That's basically it.
 
----
+## What it does
 
-## Features
+- It has our agreed note format built in: all 16 fingerprint slots, prints by location, the investigation questions, Monokuma events, and who has gloves or night vision.
+- **Copy notes** gives you the exact `════` / `──` block everyone uses, so you don't have to fix formatting before you paste.
+- Every field has a 🎤 button. Click it, say what you need, and Windows voice typing fills it in. Handy when you're running between rooms.
+- Names autocomplete for the whole 56-character roster (THH, SDR2, Zero, V3, and UDG). Type "tog" or "kiri" and pick the name, so nobody ends up as "Byakya Togomi" in the notes.
+- There's a cheat sheet at the bottom with all the stuff I always forget mid-trial: how long the investigation lasts, how fingerprints and gloves actually work, where every sink is, how long the freezer and sauna take to kill someone, kill limits, and the repair order.
+- It stays on top of the game. You can make it see-through or hide it with a hotkey.
+- Your notes save automatically, so closing the app by accident won't wipe them. They only clear when you hit **New trial**.
 
-- **The community note format, ready to fill.** It has 16 fingerprint slots, fingerprints by location, the investigation fields, Monokuma events, gloves and night vision.
-- **One-click copy.** **Copy notes** outputs the exact `════` / `──` block, ready to paste into chat or Discord.
-- **Voice input.** Each field has a 🎤 button. Click it, talk, and Windows voice typing fills that field.
-- **Name autocomplete** for the full 56-character Shinri Trial roster: Trigger Happy Havoc, Goodbye Despair, Danganronpa Zero, Killing Harmony, and Ultra Despair Girls. Type a few letters and pick the name, so it's spelled right every time.
-- **Detective cheat sheet**, with:
-  - an investigation timer calculator
-  - body discovery rules
-  - fingerprint, glove and shoeprint mechanics
-  - every sink location
-  - freezer and sauna death times
-  - kill-limit rules
-  - repair stages
-- **Stays on top of the game**, with adjustable transparency and a hotkey to hide it.
-- **Autosave.** Your notes survive closing the app, until you click **New trial**.
+## Getting it
 
-## Download and install
+Head to the **Releases** page and grab one of these:
 
-1. Go to this repo's **Releases** page and download one of these:
-   - `ShinriTrialNotes-Setup-x.x.x.exe` installs the app with a Start menu shortcut.
-   - `ShinriTrialNotes-Portable-x.x.x.exe` is a single file you can run from anywhere, with no install.
-2. Run it. Windows SmartScreen may say the app is unrecognized, because it isn't code-signed. Click **More info → Run anyway**.
+- `ShinriTrialNotes-Setup-x.x.x.exe` if you want it installed with a Start menu shortcut
+- `ShinriTrialNotes-Portable-x.x.x.exe` if you'd rather just run a single file
 
-> No release yet? Open the **Actions** tab, click the latest **Build Windows app** run, and download **ShinriTrialNotes-windows** at the bottom of the page.
+Windows will probably throw a SmartScreen warning the first time, since I didn't pay for code signing. Click **More info**, then **Run anyway**.
 
-### Required GMod setting
+If there's no release up yet, go to the **Actions** tab, open the latest **Build Windows app** run, and download **ShinriTrialNotes-windows** from the bottom of the page.
 
-In Garry's Mod, set **Options → Video → Display Mode** to **Windowed (no border)**. No overlay can appear on top of a game running in fullscreen.
+### One GMod setting you need
 
-## How to use it
+Set **Options → Video → Display Mode** to **Windowed (no border)**. If GMod runs in true fullscreen, nothing can show on top of it, including this.
 
-1. **Start a trial.** Click **New trial** to clear the previous notes. It asks once to confirm.
-2. **Fill in fields** by typing, or click a 🎤 button and speak. In name-list fields such as witnesses and locations, each new dictation is added after a comma.
-3. **Use autocomplete.** Start typing a name ("tog", "kiri") and press **Enter** or **Tab** to accept the suggestion.
-4. **Copy your notes.** Click **Copy notes** and paste wherever your group shares them.
+## Using it
+
+When a new chapter starts, hit **New trial** to clear out the old notes. It'll ask you once to make sure you meant it.
+
+From there, just fill things in. Type, or click a 🎤 and talk. In the fields that hold several names (witnesses, prints by location), each thing you say gets added after a comma instead of replacing what's there. When you start typing a name, press **Enter** or **Tab** to take the suggestion.
+
+When you're ready to share, hit **Copy notes** and paste.
 
 ### Hotkeys
 
-These work even while GMod has focus.
+These work even while you're in the game.
 
-| Keys | Action |
+| Keys | What it does |
 | --- | --- |
-| `Ctrl+Shift+N` | Show or hide the overlay |
-| `Ctrl+Shift+↑` | Make the overlay more solid |
-| `Ctrl+Shift+↓` | Make the overlay more see-through |
-| 🎤 or `Win+H` | Dictate into the selected field |
+| `Ctrl+Shift+N` | Show or hide the window |
+| `Ctrl+Shift+↑` | Make it more solid |
+| `Ctrl+Shift+↓` | Make it more see-through |
+| 🎤 or `Win+H` | Talk into the selected field |
 
-The title bar also has an opacity slider, a 📌 button to turn always-on-top on or off, and minimize and close buttons. Drag the title bar to move the window. The app remembers its size and position.
+The title bar also has an opacity slider, a 📌 button for always-on-top, and the usual minimize and close buttons. Drag the title bar to move the window around. It remembers where you left it.
 
-### Output example
+### What the copied notes look like
 
 ```
 ════════════════════════════════════════
@@ -76,50 +70,43 @@ Murder weapon: Kitchen knife
 ...
 ```
 
-## Troubleshooting
+## If something's off
 
-| Problem | Fix |
-| --- | --- |
-| The overlay disappears behind GMod | Set GMod to **Windowed (no border)**, and make sure 📌 is pink (on). |
-| 🎤 does nothing | Press `Win+H` once by hand. Windows will prompt you to turn on voice typing. After that, the button works. |
-| The first 🎤 click is slow | The voice helper warms up when the app starts. Later clicks are instant. |
-| Hotkeys don't work | Another program may be using the same shortcut. Close it, or use the title bar buttons instead. |
-| The window is off-screen | Close and reopen the app. It moves itself back to a visible screen. |
+**The window keeps going behind GMod.** Make sure GMod is on Windowed (no border), and check that the 📌 is pink. Pink means it's on.
 
-## Building from source
+**The 🎤 button doesn't do anything.** Press `Win+H` once yourself. Windows will ask you to turn on voice typing, and after that the button works.
 
-You need [Node.js](https://nodejs.org) 20 or newer.
+**The first 🎤 click is a bit slow.** That's normal. It warms up when the app opens, and every click after that is instant.
+
+**The hotkeys don't work.** Something else on your PC is probably using the same shortcut. You can still use the buttons in the title bar.
+
+**The window is off-screen somewhere.** Close it and open it again. It'll put itself back on a screen you can see.
+
+## Building it yourself
+
+You'll need [Node.js](https://nodejs.org) 20 or newer.
 
 ```bash
 npm install
-npm start        # run the app
-npm run dist     # build the Windows installer and portable .exe into dist/
+npm start        # run it
+npm run dist     # build the .exe files into dist/
 ```
 
-Every push to `main` builds the Windows `.exe` files automatically with GitHub Actions. To publish a release, push a version tag:
+GitHub builds the `.exe` files automatically every time something gets pushed to `main`. To put out a proper release, tag it:
 
 ```bash
 git tag v1.0.0
 git push --tags
 ```
 
-### Project layout
-
-```
-main.js          Window, always-on-top, hotkeys, voice typing helper
-preload.js       Safe bridge between the window and the page
-app/index.html   The notes page (form, copy, autocomplete, cheat sheet)
-.github/         Automatic Windows build
-```
+If you want to poke around the code, `main.js` handles the window, hotkeys, and voice typing, `preload.js` connects the window to the page, and everything you actually see is in `app/index.html`.
 
 ## Credits
 
-- Cheat sheet facts and the character roster are summarized from the [Shinri Trial Guidebook](https://kirigiris.press/guidebook?lang=en).
-- The note format is the Shinri Trial community's agreed investigation template.
-- Built with [Electron](https://www.electronjs.org).
+The cheat sheet and the character list come from the [Shinri Trial Guidebook](https://kirigiris.press/guidebook?lang=en), which is worth reading if you haven't. The note format is the one our community agreed on. I just put it in a window.
 
-This is a fan-made tool. It isn't affiliated with the Shinri Trial developers, Spike Chunsoft, or the Danganronpa series.
+This is a fan project. It's not affiliated with the Shinri Trial devs, Spike Chunsoft, or Danganronpa.
 
 ## License
 
-[MIT](https://opensource.org/license/mit)
+[MIT](LICENSE). Use it, change it, share it.
