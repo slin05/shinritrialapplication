@@ -151,6 +151,35 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
 .ctl-group dl { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 5px 10px; align-items: baseline; font-size: 13.5px; }
 .ctl-group dt { color: var(--fg); white-space: nowrap; font-weight: 500; }
 .ctl-group dd { margin: 0; color: var(--muted); }
+
+/* Items tab */
+.tab { font-size: 14px; letter-spacing: .04em; padding: 9px 2px 8px; white-space: nowrap; }
+.howto { margin: 0; background: var(--panel-2); border: 1px dashed var(--accent); border-radius: 8px; padding: 10px 12px; font-size: 13.5px; }
+.group-title { margin: 6px 0 -4px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+.item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.item { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.item header { border: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px; }
+.item h4 { margin: 0; font-size: 14.5px; font-weight: 600; color: var(--fg); }
+.item .tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.tag { font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 7px; white-space: nowrap; }
+.tag.shop { color: var(--accent); border-color: var(--accent); }
+.item p { margin: 0; font-size: 13px; color: var(--muted); }
+.item p.note { font-size: 12px; font-style: italic; }
+.item table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.item td { padding: 4px 0; border-top: 1px solid var(--line); vertical-align: top; color: var(--fg); }
+.item td.fl { color: var(--muted); white-space: nowrap; padding: 4px 8px; font-variant-numeric: tabular-nums; }
+.item td.ch { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.item td.ch .hot { color: var(--accent); font-weight: 600; }
+
+.item p.craft { font-size: 12px; color: var(--fg); background: var(--panel-2); border-radius: 6px; padding: 6px 8px; }
+.item p.craft b { color: var(--accent); font-weight: 600; margin-right: 4px; }
+.tag.dmg { color: var(--fg); border-color: var(--muted); }
+.howto-sub { margin: -8px 0 0; font-size: 12.5px; color: var(--muted); }
+
+.jump { display: flex; flex-wrap: wrap; gap: 6px; }
+.jump button { border: 1px solid var(--line); background: var(--panel-2); color: var(--fg); border-radius: 999px; padding: 4px 11px; font-size: 12.5px; }
+.jump button:hover { border-color: var(--accent); color: var(--accent); }
+.group-title { scroll-margin-top: 92px; }
 </style>
 </head>
 <body>
@@ -180,8 +209,9 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
 
   <nav class="tabs" role="tablist" aria-label="Sections">
     <button class="tab" role="tab" type="button" data-tab="notes" aria-selected="true">Notes</button>
-    <button class="tab" role="tab" type="button" data-tab="cheat" aria-selected="false">Cheat sheet</button>
+    <button class="tab" role="tab" type="button" data-tab="cheat" aria-selected="false">Cheats</button>
     <button class="tab" role="tab" type="button" data-tab="rules" aria-selected="false">Rules</button>
+    <button class="tab" role="tab" type="button" data-tab="items" aria-selected="false">Items</button>
   </nav>
 
   <div class="panel" id="tab-notes" role="tabpanel">
@@ -311,6 +341,14 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
         </ul>
       </div>
       <div class="ref-item">
+        <h3>Monopad drives</h3>
+        <ul>
+          <li>Hold a drive, then hold E on the victim's body and pick the download option.</li>
+          <li>Data drive: their chats and private notes (one use). USB drive: their recent actions log (reusable).</li>
+          <li>Messages never reach dead players or anyone not holding their monopad, so gaps can mean something.</li>
+        </ul>
+      </div>
+      <div class="ref-item">
         <h3>Monokuma events</h3>
         <ul>
           <li>Masquerade: everyone gets a disguise. A disguise without gloves leaves smeared bloody prints.</li>
@@ -415,7 +453,377 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
       </div>
     </div>
   </section>
-  <p class="tip">Your draft stays saved in the app until you start a new trial. Cheat sheet summarized from the Shinri Trial Guidebook (kirigiris.press); rules from blog.shinri-trial.com.</p>
+
+  <section class="panel ref" id="tab-items" role="tabpanel" hidden>
+    <h2 class="panel-title">Items &amp; spawns <small>chance per container, from the guidebook</small></h2>
+    <p class="howto-sub">Pink chances are the likely sources (45%+ or always there). Craft lines tell you what someone needed to gather, and where.</p>
+        <nav class="jump" aria-label="Jump to"><button type="button" data-jump="grp-0">Keycards</button><button type="button" data-jump="grp-1">UV / night vision</button><button type="button" data-jump="grp-2">Drives</button><button type="button" data-jump="grp-3">Gloves</button><button type="button" data-jump="grp-4">Break-in</button><button type="button" data-jump="grp-5">Weapons</button><button type="button" data-jump="grp-6">Poisons</button><button type="button" data-jump="grp-7">Traps</button><button type="button" data-jump="grp-8">Restraints</button></nav>
+    <p class="howto"><b>Using a drive:</b> hold it, then hold <kbd>E</kbd> on the victim’s body and pick the download option in the interaction wheel. Read the result in your monopad under <i>Downloaded data</i>.</p>
+    <h3 class="group-title" id="grp-0">Keycards</h3>
+    <div class="item-grid">
+      <article class="item">
+        <header><h4>Academy Head Keycard</h4><div class="tags"><span class="tag">Legendary</span></div></header>
+        <p>Opens the lobby service room, the technical rooms and the closed dorm floor gate. The master key.</p>
+        <table><tbody>
+          <tr><td>Table, Headmaster&#x27;s Office</td><td class="fl">4F</td><td class="ch"><span class="hot">Always</span></td></tr>
+          <tr><td>Metal lockers, Abandoned Dorm Floor (Secret Room)</td><td class="fl">2F</td><td class="ch"><span>5%</span></td></tr>
+          <tr><td>Bins, Classroom 4F / 5F</td><td class="fl">4F–5F</td><td class="ch"><span>1%</span></td></tr>
+        </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>Keycard “Staff Room”</h4><div class="tags"><span class="tag">Rare</span><span class="tag shop">Monoshop 150 rc</span></div></header>
+        <p>Opens the staff room.</p>
+        <table><tbody>
+          <tr><td>Tables, Staff Room</td><td class="fl">4F</td><td class="ch"><span>20%</span></td></tr>
+          <tr><td>Lockers by the workbench, Gym</td><td class="fl">1F</td><td class="ch"><span>10%</span></td></tr>
+          <tr><td>Trash bucket, Infirmary</td><td class="fl">1F</td><td class="ch"><span>10%</span></td></tr>
+          <tr><td>Table by the incinerator</td><td class="fl">1F</td><td class="ch"><span>10%</span></td></tr>
+          <tr><td>Lockers, Abandoned Dorm Floor (Giraffe Room)</td><td class="fl">2F</td><td class="ch"><span>10%</span></td></tr>
+          <tr><td>Table near the machine, Incinerator</td><td class="fl">1F</td><td class="ch"><span>3%</span></td></tr>
+        </tbody></table>
+        <p class="note">+11 bins at 1–2%</p>
+      </article>
+      <article class="item">
+        <header><h4>Keycard “Technical Rooms”</h4><div class="tags"><span class="tag">Very rare</span><span class="tag shop">Monoshop 500 rc</span></div></header>
+        <p>Opens the technical rooms.</p>
+        <table><tbody>
+          <tr><td>Tables, Staff Room</td><td class="fl">4F</td><td class="ch"><span>20%</span></td></tr>
+          <tr><td>Metal filing cabinets, Staff Room</td><td class="fl">1F</td><td class="ch"><span>3%</span></td></tr>
+        </tbody></table>
+        <p class="note">+9 spots under 3%</p>
+      </article>
+      <article class="item">
+        <header><h4>Keycard “Abandoned Dorm Floor”</h4><div class="tags"><span class="tag">Very rare</span><span class="tag shop">Monoshop 750 rc</span></div></header>
+        <p>Opens the gate to the closed dorm floor.</p>
+        <table><tbody>
+          <tr><td>Tables, Staff Room</td><td class="fl">4F</td><td class="ch"><span>20%</span></td></tr>
+        </tbody></table>
+        <p class="note">+7 bins at 1%</p>
+      </article>
+    </div>
+    <h3 class="group-title" id="grp-1">Seeing evidence</h3>
+    <div class="item-grid">
+      <article class="item">
+        <header><h4>UV Flashlight</h4><div class="tags"><span class="tag">Very rare</span><span class="tag shop">Monoshop 750 rc</span></div></header>
+        <p>Shows ordinary and smeared fingerprints and shoeprints. You can&#x27;t see them without it.</p>
+        <table><tbody>
+          <tr><td>Lockers, Utility Room</td><td class="fl">3F–4F</td><td class="ch"><span>15%</span></td></tr>
+          <tr><td>Metal filing cabinets, Staff Room</td><td class="fl">1F</td><td class="ch"><span>3%</span></td></tr>
+          <tr><td>Green mesh lockers, Staff Room</td><td class="fl">1F</td><td class="ch"><span>3%</span></td></tr>
+        </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>NoctiScope v0.1 (night vision)</h4><div class="tags"><span class="tag">Rare</span><span class="tag shop">Monoshop 200 rc</span></div></header>
+        <p>See in the dark. The lens glints, so the wearer can be spotted.</p>
+        <table><tbody>
+          <tr><td>Metal lockers, Abandoned Dorm Floor (Secret Room)</td><td class="fl">2F</td><td class="ch"><span class="hot">55%</span></td></tr>
+          <tr><td>Green mesh lockers, Staff Room</td><td class="fl">1F</td><td class="ch"><span>35%</span></td></tr>
+          <tr><td>Lockers, Utility Room</td><td class="fl">3F–4F</td><td class="ch"><span>35%</span></td></tr>
+          <tr><td>Metal rack, Library (Archive)</td><td class="fl">2F</td><td class="ch"><span>5%</span></td></tr>
+        </tbody></table>
+        <p class="note">Keebo&#x27;s Eyes also give night vision but never spawn.</p>
+      </article>
+    </div>
+    <h3 class="group-title" id="grp-2">Monopad drives</h3>
+    <div class="item-grid">
+      <article class="item">
+        <header><h4>Secure Data Drive</h4><div class="tags"><span class="tag">Very rare</span><span class="tag shop">Monoshop 400 rc</span></div></header>
+        <p>Downloads a victim&#x27;s chats and private notes. One use: it can&#x27;t be wiped.</p>
+        <table><tbody>
+          <tr><td>Box with bloody traces, Classroom with Bloodstains</td><td class="fl">5F</td><td class="ch"><span class="hot">Always</span></td></tr>
+          <tr><td>Metal filing cabinets, Staff Room</td><td class="fl">1F</td><td class="ch"><span class="hot">45%</span></td></tr>
+          <tr><td>Lockers, Abandoned Dorm Floor (Giraffe Room)</td><td class="fl">2F</td><td class="ch"><span>15%</span></td></tr>
+          <tr><td>Briefcase on the bridge, Gym</td><td class="fl">1F</td><td class="ch"><span>3%</span></td></tr>
+        </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>Secure USB Drive</h4><div class="tags"><span class="tag">Rare</span><span class="tag shop">Monoshop 200 rc</span></div></header>
+        <p>Downloads a log of the owner&#x27;s recent actions. Can be wiped and reused.</p>
+        <table><tbody>
+          <tr><td>Box with bloody traces, Classroom with Bloodstains</td><td class="fl">5F</td><td class="ch"><span class="hot">Always</span></td></tr>
+          <tr><td>Metal filing cabinets, Staff Room</td><td class="fl">1F</td><td class="ch"><span class="hot">45%</span></td></tr>
+          <tr><td>Lockers, Abandoned Dorm Floor (Giraffe Room)</td><td class="fl">2F</td><td class="ch"><span>15%</span></td></tr>
+          <tr><td>Briefcase on the bridge, Gym</td><td class="fl">1F</td><td class="ch"><span>3%</span></td></tr>
+        </tbody></table>
+      </article>
+    </div>
+    <h3 class="group-title" id="grp-3">Gloves (where a killer gets them)</h3>
+    <div class="item-grid">
+      <article class="item">
+        <header><h4>Gloves</h4><div class="tags"><span class="tag">Reusable</span></div></header>
+        <p>Every print you leave is smeared, for as long as you wear them.</p>
+        <table><tbody>
+          <tr><td>Metal lockers, Abandoned Dorm Floor (Secret Room)</td><td class="fl">2F</td><td class="ch"><span class="hot">55%</span></td></tr>
+          <tr><td>Green mesh lockers, Staff Room</td><td class="fl">1F</td><td class="ch"><span>25%</span></td></tr>
+          <tr><td>Lockers, Utility Room</td><td class="fl">3F–4F</td><td class="ch"><span>25%</span></td></tr>
+          <tr><td>Lockers by the workbench, Gym</td><td class="fl">1F</td><td class="ch"><span>20%</span></td></tr>
+          <tr><td>Lockers, Abandoned Dorm Floor (Giraffe Room)</td><td class="fl">2F</td><td class="ch"><span>20%</span></td></tr>
+          <tr><td>Racks, Pool (Storage)</td><td class="fl">2F</td><td class="ch"><span>10%</span></td></tr>
+        </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>Disposable Gloves</h4><div class="tags"><span class="tag">10 uses</span></div></header>
+        <p>Smear prints for 10 uses, then tear and leave normal prints.</p>
+        <table><tbody>
+          <tr><td>Red crate, chicken coop, Botanical Garden</td><td class="fl">5F</td><td class="ch"><span class="hot">55%</span></td></tr>
+          <tr><td>Wooden crate (middle), Shop</td><td class="fl">1F</td><td class="ch"><span>30%</span></td></tr>
+          <tr><td>Trash bucket, Infirmary</td><td class="fl">1F</td><td class="ch"><span>15%</span></td></tr>
+          <tr><td>White “TRASH” bin, Kitchen</td><td class="fl">1F</td><td class="ch"><span>15%</span></td></tr>
+          <tr><td>Bin, Physics Lab (Storage)</td><td class="fl">3F</td><td class="ch"><span>15%</span></td></tr>
+          <tr><td>Toolbox left of the electrical panel, Gym</td><td class="fl">1F</td><td class="ch"><span>10%</span></td></tr>
+        </tbody></table>
+        <p class="note">+19 more spots at 3% or higher</p>
+      </article>
+    </div>
+    <h3 class="group-title" id="grp-4">Break-in tools</h3>
+    <div class="item-grid">
+      <article class="item">
+        <header><h4>Crowbar</h4><div class="tags"></div></header>
+        <p>Breaks doors without leaving prints on them, but makes a loud noise.</p>
+        <table><tbody>
+          <tr><td>Rack with tools, Shop</td><td class="fl">1F</td><td class="ch"><span>35%</span></td></tr>
+          <tr><td>Red locker, Incinerator</td><td class="fl">1F</td><td class="ch"><span>15%</span></td></tr>
+        </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>Lockpick</h4><div class="tags"></div></header>
+        <p>Picks locks. Personal safes are harder to pick.</p>
+        <table><tbody>
+          <tr><td>Wooden crates (left, middle, right), Shop</td><td class="fl">1F</td><td class="ch"><span class="hot">70% each</span></td></tr>
+          <tr><td>Cardboard box “Mal co. Shipping”, Infirmary</td><td class="fl">1F</td><td class="ch"><span class="hot">55%</span></td></tr>
+          <tr><td>Lockers, Pool (Locker Room)</td><td class="fl">2F</td><td class="ch"><span>5%</span></td></tr>
+        </tbody></table>
+      </article>
+    </div>
+    <h3 class="group-title" id="grp-5">Weapons (Monokuma File shows the damage type)</h3>
+    <div class="item-grid">
+      <article class="item">
+        <header><h4>Kitchen Knife</h4><div class="tags"><span class="tag">Common</span><span class="tag dmg">Stab-cut</span></div></header>
+        <p>The most common murder weapon. Check the knife stand count.</p>
+        <table><tbody>
+          <tr><td>Knife stand, Kitchen</td><td class="fl">1F</td><td class="ch"><span class="hot">85%</span></td></tr>
+        </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>Kitchen Axe</h4><div class="tags"><span class="tag">Uncommon</span><span class="tag dmg">Stab-cut</span></div></header>
+        <p>Heavy blade from the same knife stand.</p>
+        <table><tbody>
+          <tr><td>Knife stand, Kitchen</td><td class="fl">1F</td><td class="ch"><span class="hot">80%</span></td></tr>
+        </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>Katana</h4><div class="tags"><span class="tag">Legendary</span><span class="tag dmg">Stab-cut</span></div></header>
+        <p>Its right-click attack is described differently in the Monokuma File.</p>
+        <table><tbody>
+          <tr><td>Katana stand, Dojo</td><td class="fl">5F</td><td class="ch"><span class="hot">Always</span></td></tr>
+          <tr><td>Metal lockers, Abandoned Dorm Floor (Secret Room)</td><td class="fl">2F</td><td class="ch"><span class="hot">55%</span></td></tr>
+        </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>Fire Axe</h4><div class="tags"><span class="tag">Rare</span><span class="tag dmg">Stab-cut</span></div></header>
+        <p>Can also cut through doors and partitions.</p>
+        <table><tbody>
+          <tr><td>Fire axe mount, Incinerator</td><td class="fl">1F</td><td class="ch"><span class="hot">Always</span></td></tr>
+          <tr><td>Fire cabinets, Biology Lab</td><td class="fl">5F</td><td class="ch"><span>5%</span></td></tr>
+        </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>Baseball Bat</h4><div class="tags"><span class="tag">Rare</span><span class="tag dmg">Blunt</span></div></header>
+        <table><tbody>
+          <tr><td>Lockers by the workbench, Gym</td><td class="fl">1F</td><td class="ch"><span class="hot">Always</span></td></tr>
+          <tr><td>Lockers, Abandoned Dorm Floor (Giraffe Room)</td><td class="fl">2F</td><td class="ch"><span>20%</span></td></tr>
+        </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>Hammer</h4><div class="tags"><span class="tag">Common</span><span class="tag dmg">Blunt</span></div></header>
+        <p>Also a crafting tool, so plenty of people carry one.</p>
+        <table><tbody>
+          <tr><td>Cabinet, Dormitory Rooms</td><td class="fl">1F</td><td class="ch"><span class="hot">Always</span></td></tr>
+          <tr><td>Rack with tools, Shop</td><td class="fl">1F</td><td class="ch"><span>35%</span></td></tr>
+          <tr><td>Toolbox left of the electrical panel, Gym</td><td class="fl">1F</td><td class="ch"><span>10%</span></td></tr>
+          <tr><td>Toolbox on the bridge, Gym</td><td class="fl">1F</td><td class="ch"><span>10%</span></td></tr>
+        </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>Adjustable Wrench</h4><div class="tags"><span class="tag">Common</span><span class="tag dmg">Blunt</span></div></header>
+        <table><tbody>
+          <tr><td>Red tool set, Art Room (Storage)</td><td class="fl">3F</td><td class="ch"><span class="hot">Always</span></td></tr>
+          <tr><td>Rack with tools, Shop</td><td class="fl">1F</td><td class="ch"><span class="hot">45%</span></td></tr>
+          <tr><td>Tool container behind the stage, Gym</td><td class="fl">1F</td><td class="ch"><span>15%</span></td></tr>
+          <tr><td>Red toolbox, Physics Lab</td><td class="fl">3F</td><td class="ch"><span>15%</span></td></tr>
+        </tbody></table>
+        <p class="note">+ more spots</p>
+      </article>
+      <article class="item">
+        <header><h4>Lead Pipe</h4><div class="tags"><span class="tag">Common</span><span class="tag dmg">Blunt</span></div></header>
+        <table><tbody>
+          <tr><td>Toolbox left of the electrical panel, Gym</td><td class="fl">1F</td><td class="ch"><span>10%</span></td></tr>
+          <tr><td>Toolbox on the bridge, Gym</td><td class="fl">1F</td><td class="ch"><span>10%</span></td></tr>
+        </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>Shovel</h4><div class="tags"><span class="tag">Uncommon</span><span class="tag dmg">Hybrid</span></div></header>
+        <table><tbody>
+          <tr><td>Shovel, Garden by the Cafeteria</td><td class="fl">1F</td><td class="ch"><span class="hot">Always</span></td></tr>
+        </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>Toko Scissors</h4><div class="tags"><span class="tag">Legendary</span><span class="tag dmg">Stab-cut</span></div></header>
+        <p>Doesn&#x27;t spawn anywhere.</p>
+      </article>
+    </div>
+    <h3 class="group-title" id="grp-6">Poisons (mixed into food or drink)</h3>
+    <div class="item-grid">
+      <article class="item">
+        <header><h4>Poison “Despair”</h4><div class="tags"><span class="tag">Legendary</span></div></header>
+        <p>−20% health every 5 s for 60 s, plus disorientation. Kills from full health in about 25 seconds.</p>
+        <table><tbody>
+          <tr><td>Metal lockers, Abandoned Dorm Floor (Secret Room)</td><td class="fl">2F</td><td class="ch"><span>25%</span></td></tr>
+          <tr><td>Lab cabinet B1, Chemistry Lab</td><td class="fl">4F</td><td class="ch"><span>20%</span></td></tr>
+        </tbody></table>
+        <p class="craft"><b>Craft</b> Med. Lab + Syringe: Secret Reagent ×3, Complex Mixture ×4, Oleander ×6, Alcohol ×3</p>
+      </article>
+      <article class="item">
+        <header><h4>Poison “Widow&#x27;s Kiss”</h4><div class="tags"><span class="tag">Very rare</span></div></header>
+        <p>−8% health every 5 s for 2 min. Kills from full health in about 65 seconds.</p>
+        <table><tbody>
+          <tr><td>Lab cabinet A1, Chemistry Lab</td><td class="fl">4F</td><td class="ch"><span>35%</span></td></tr>
+          <tr><td>Lab cabinet C1, Chemistry Lab</td><td class="fl">4F</td><td class="ch"><span>35%</span></td></tr>
+        </tbody></table>
+        <p class="craft"><b>Craft</b> Med. Lab + Syringe: Secret Reagent ×1, Complex Mixture ×3, Special Extract ×3, Oleander ×3, Alcohol ×2</p>
+      </article>
+      <article class="item">
+        <header><h4>Poison “Acid”</h4><div class="tags"><span class="tag">Rare</span></div></header>
+        <p>−2% health every 5 s for 5 min. Kills from full health in about 4 minutes.</p>
+        <table><tbody>
+          <tr><td>Lab cabinets A2/C2, Chemistry Lab</td><td class="fl">4F</td><td class="ch"><span class="hot">55%</span></td></tr>
+          <tr><td>Blue chest of drawers, Infirmary</td><td class="fl">1F</td><td class="ch"><span>3%</span></td></tr>
+        </tbody></table>
+        <p class="craft"><b>Craft</b> Med. Lab + Syringe: Special Extract ×5, Raw Solution ×3, Hemlock ×6, Alcohol ×2</p>
+      </article>
+      <article class="item">
+        <header><h4>Sleeping Pills</h4><div class="tags"><span class="tag">Rare</span></div></header>
+        <p>Puts the target to sleep for 3 minutes. They can&#x27;t be woken.</p>
+        <table><tbody>
+          <tr><td>Metal lockers, Abandoned Dorm Floor (Secret Room)</td><td class="fl">2F</td><td class="ch"><span>25%</span></td></tr>
+          <tr><td>Briefcase on the bridge, Gym</td><td class="fl">1F</td><td class="ch"><span>5%</span></td></tr>
+          <tr><td>Medical cabinet, Infirmary</td><td class="fl">1F</td><td class="ch"><span>5%</span></td></tr>
+        </tbody></table>
+        <p class="craft"><b>Craft</b> Med. Lab + Syringe: Complex Mixture ×2, Hemlock ×3, Alcohol ×1</p>
+      </article>
+      <article class="item">
+        <header><h4>Hemlock (ingredient)</h4><div class="tags"><span class="tag">Uncommon</span></div></header>
+        <p>Picked from plants. Whoever was in the gardens may have it.</p>
+        <table><tbody>
+          <tr><td>Flowerbeds, Botanical Garden</td><td class="fl">5F</td><td class="ch"><span class="hot">90%</span></td></tr>
+          <tr><td>Bushes, Garden by the Dormitories</td><td class="fl">1F</td><td class="ch"><span class="hot">70%</span></td></tr>
+          <tr><td>Flowerbeds, Garden by the Cafeteria</td><td class="fl">1F</td><td class="ch"><span class="hot">60%</span></td></tr>
+        </tbody></table>
+        <p class="note">Gardens also leave dirty shoeprints.</p>
+      </article>
+      <article class="item">
+        <header><h4>Oleander (ingredient)</h4><div class="tags"><span class="tag">Rare</span></div></header>
+        <p>Needed for Despair and Widow&#x27;s Kiss.</p>
+        <table><tbody>
+          <tr><td>Flowerbeds, Botanical Garden</td><td class="fl">5F</td><td class="ch"><span class="hot">90%</span></td></tr>
+          <tr><td>Bushes, Garden by the Dormitories</td><td class="fl">1F</td><td class="ch"><span>20%</span></td></tr>
+          <tr><td>Flowerbeds, Garden by the Cafeteria</td><td class="fl">1F</td><td class="ch"><span>10%</span></td></tr>
+        </tbody></table>
+      </article>
+    </div>
+    <h3 class="group-title" id="grp-7">Traps &amp; throwables (all crafted at the workbench)</h3>
+    <div class="item-grid">
+      <article class="item">
+        <header><h4>Bear Trap</h4><div class="tags"><span class="tag">Rare</span></div></header>
+        <p>30 damage, holds the victim 3 s, then slows them for 10 s.</p>
+        <p class="craft"><b>Craft</b> Workbench: Processed Scrap Metal ×3, Sensitive Mechanism ×2, Universal Parts ×1</p>
+      </article>
+      <article class="item">
+        <header><h4>Electric Shock Trap</h4><div class="tags"><span class="tag">Rare</span></div></header>
+        <p>20 damage and a 2-minute stun, then 2 minutes of disorientation.</p>
+        <p class="craft"><b>Craft</b> Workbench: Processed Scrap Metal ×3, Circuit Board ×1, Sensitive Mechanism ×2, Tape ×1</p>
+      </article>
+      <article class="item">
+        <header><h4>Explosive Trap</h4><div class="tags"><span class="tag">Very rare</span></div></header>
+        <p>100 damage to whoever steps on it, 50 to anyone within 2 m. Stuns.</p>
+        <p class="craft"><b>Craft</b> Workbench + Screwdriver: Explosives ×1, Reinforced Scrap Metal ×2, Sensitive Mechanism ×2, Circuit Board ×1, Tape ×2, Universal Parts ×3</p>
+      </article>
+      <article class="item">
+        <header><h4>Poison Gas Trap</h4><div class="tags"><span class="tag">Very rare</span></div></header>
+        <p>More than 2 s in the cloud gives Acid poisoning and −10 max health for 3 min.</p>
+        <p class="craft"><b>Craft</b> Workbench: Reinforced Scrap Metal ×3, Sensitive Mechanism ×2, Poison “Acid” ×2, Tape ×2</p>
+      </article>
+      <article class="item">
+        <header><h4>Explosives</h4><div class="tags"><span class="tag">Very rare</span></div></header>
+        <p>250 damage to everyone within 3 m.</p>
+        <table><tbody>
+          <tr><td>Metal lockers, Abandoned Dorm Floor (Secret Room)</td><td class="fl">2F</td><td class="ch"><span>20%</span></td></tr>
+        </tbody></table>
+        <p class="craft"><b>Craft</b> Workbench + Screwdriver: Complex Mechanism ×1, Gunpowder ×3, Reinforced Scrap Metal ×3, Tape ×2</p>
+      </article>
+      <article class="item">
+        <header><h4>Molotov Cocktail</h4><div class="tags"><span class="tag">Very rare</span></div></header>
+        <p>Damage over time. Unconscious players are immune to it.</p>
+        <table><tbody>
+          <tr><td>Lockers, Utility Room</td><td class="fl">3F–4F</td><td class="ch"><span class="hot">45%</span></td></tr>
+        </tbody></table>
+        <p class="craft"><b>Craft</b> Workbench: Rag ×2, Alcohol ×4, Complex Mixture ×4</p>
+      </article>
+      <article class="item">
+        <header><h4>Somnus Grenade</h4><div class="tags"><span class="tag">Very rare</span></div></header>
+        <p>Thrown, puts people to sleep. Sleep shows after the injuries in the Monokuma File.</p>
+        <table><tbody>
+          <tr><td>Metal lockers, Abandoned Dorm Floor (Secret Room)</td><td class="fl">2F</td><td class="ch"><span class="hot">45%</span></td></tr>
+          <tr><td>Lockers, Utility Room</td><td class="fl">3F–4F</td><td class="ch"><span>30%</span></td></tr>
+          <tr><td>Green mesh lockers, Staff Room</td><td class="fl">1F</td><td class="ch"><span>5%</span></td></tr>
+        </tbody></table>
+        <p class="craft"><b>Craft</b> Workbench: Reinforced Scrap Metal ×2, Sensitive Mechanism ×2, Sleeping Pills ×1, Tape ×2</p>
+      </article>
+    </div>
+    <h3 class="group-title" id="grp-8">Restraints &amp; cleanup</h3>
+    <div class="item-grid">
+      <article class="item">
+        <header><h4>Handcuffs</h4><div class="tags"><span class="tag">Rare</span></div></header>
+        <p>Only someone else can take them off.</p>
+        <table><tbody>
+          <tr><td>Metal lockers, Abandoned Dorm Floor (Secret Room)</td><td class="fl">2F</td><td class="ch"><span class="hot">55%</span></td></tr>
+          <tr><td>Lockers (×2), Utility Room</td><td class="fl">3F–4F</td><td class="ch"><span>30%</span></td></tr>
+          <tr><td>Lockers (×4), Utility Room</td><td class="fl">3F–4F</td><td class="ch"><span>25%</span></td></tr>
+          <tr><td>Green mesh lockers, Staff Room</td><td class="fl">1F</td><td class="ch"><span>15%</span></td></tr>
+        </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>Zip Ties</h4><div class="tags"><span class="tag">Uncommon</span></div></header>
+        <p>Only someone else can take them off.</p>
+        <table><tbody>
+          <tr><td>Cardboard box “Mal co. Shipping”, Infirmary</td><td class="fl">1F</td><td class="ch"><span class="hot">45%</span></td></tr>
+          <tr><td>Green mesh lockers, Staff Room</td><td class="fl">1F</td><td class="ch"><span>30%</span></td></tr>
+          <tr><td>Lockers, Utility Room</td><td class="fl">3F–4F</td><td class="ch"><span>30%</span></td></tr>
+          <tr><td>Lockers by the electrical panel, Gym</td><td class="fl">1F</td><td class="ch"><span>25%</span></td></tr>
+        </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>Head Bag</h4><div class="tags"><span class="tag">Uncommon</span></div></header>
+        <p>The only restraint you can remove yourself.</p>
+        <table><tbody>
+          <tr><td>Cart with boxes, Library (Archive)</td><td class="fl">2F</td><td class="ch"><span>25%</span></td></tr>
+          <tr><td>Resource racks, Storeroom</td><td class="fl">1F</td><td class="ch"><span>25%</span></td></tr>
+        </tbody></table>
+      </article>
+      <article class="item">
+        <header><h4>Mop</h4><div class="tags"><span class="tag">Uncommon</span></div></header>
+        <p>Wipes blood, prints, shoeprints and trap traces. Can&#x27;t erase the Monokuma File.</p>
+        <table><tbody>
+          <tr><td>Bucket with a mop, Restrooms by the Gym</td><td class="fl">1F</td><td class="ch"><span class="hot">Always</span></td></tr>
+          <tr><td>Bucket with a mop, Pool (Storage)</td><td class="fl">2F</td><td class="ch"><span class="hot">Always</span></td></tr>
+          <tr><td>Bucket with a mop, Restrooms 2F</td><td class="fl">2F</td><td class="ch"><span class="hot">Always</span></td></tr>
+          <tr><td>Bucket with a mop, Incinerator</td><td class="fl">1F</td><td class="ch"><span class="hot">Always</span></td></tr>
+        </tbody></table>
+        <p class="note">A missing mop from its bucket is a clue.</p>
+      </article>
+    </div>
+  </section>
+  <p class="tip">Your draft stays saved in the app until you start a new trial. Cheat sheet summarized from the Shinri Trial Guidebook (kirigiris.press); rules from blog.shinri-trial.com; item spawns from the guidebook (v1.8.6.3).</p>
 </div>
 
 <div class="sheet" id="copySheet" hidden role="dialog" aria-label="Copy notes manually">
@@ -720,7 +1128,7 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
   const tabs = [...document.querySelectorAll(".tab")];
   function show(name) {
     tabs.forEach(t => t.setAttribute("aria-selected", String(t.dataset.tab === name)));
-    ["notes", "cheat", "rules"].forEach(n => { document.getElementById("tab-" + n).hidden = n !== name; });
+    ["notes", "cheat", "rules", "items"].forEach(n => { document.getElementById("tab-" + n).hidden = n !== name; });
     document.body.dataset.tab = name;
     window.scrollTo(0, 0);
     try { localStorage.setItem("shinri-tab", name); } catch (e) {}
@@ -728,7 +1136,7 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
   tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.tab)));
   let start = "notes";
   try { start = localStorage.getItem("shinri-tab") || "notes"; } catch (e) {}
-  show(["notes", "cheat", "rules"].includes(start) ? start : "notes");
+  show(["notes", "cheat", "rules", "items"].includes(start) ? start : "notes");
 })();
 </script>
 
@@ -738,6 +1146,12 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
   try { if (localStorage.getItem("shinri-controls") === "closed") d.open = false; } catch (e) {}
   d.addEventListener("toggle", () => { try { localStorage.setItem("shinri-controls", d.open ? "open" : "closed"); } catch (e) {} });
 })();
+</script>
+
+<script>
+document.querySelectorAll(".jump button").forEach(b => b.addEventListener("click", () => {
+  const t = document.getElementById(b.dataset.jump); if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+}));
 </script>
 </body>
 </html>
