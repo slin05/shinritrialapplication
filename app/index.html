@@ -888,14 +888,25 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
   // ---------- cast list for autocomplete ----------
   // Shinri Trial's 56-character roster (from the guidebook's Characters section)
   const CAST = {
-    THH: ["Makoto Naegi","Byakuya Togami","Kiyotaka Ishimaru","Kyoko Kirigiri","Sayaka Maizono","Celestia Ludenberg","Junko Enoshima","Toko Fukawa","Aoi Asahina","Sakura Ogami","Hifumi Yamada","Leon Kuwata","Yasuhiro Hagakure","Mukuro Ikusaba","Chihiro Fujisaki","Mondo Owada"],
-    SDR2: ["Hajime Hinata","Nagito Komaeda","Gundham Tanaka","Fuyuhiko Kuzuryu","Ibuki Mioda","Sonia Nevermind","Chiaki Nanami","Mikan Tsumiki","Peko Pekoyama","Mahiru Koizumi","Akane Owari","Hiyoko Saionji","Imposter (Twogami)","Nekomaru Nidai","Teruteru Hanamura","Kazuichi Soda"],
+    THH: ["Makoto Naegi","Byakuya Togami","Kiyotaka Ishimaru","Kyoko Kirigiri","Sayaka Maizono","Celestia Ludenberg","Junko (Mukuro)","Junko Enoshima","Toko Fukawa","Aoi Asahina","Sakura Ogami","Hifumi Yamada","Leon Kuwata","Yasuhiro Hagakure","Mukuro Ikusaba","Chihiro Fujisaki","Mondo Owada"],
+    SDR2: ["Hajime Hinata","Nagito Komaeda","Gundham Tanaka","Fuyuhiko Kuzuryu","Ibuki Mioda","Sonia Nevermind","Chiaki Nanami","Mikan Tsumiki","Peko Pekoyama","Mahiru Koizumi","Akane Owari","Hiyoko Saionji","Twogami (Imposter)","Nekomaru Nidai","Teruteru Hanamura","Kazuichi Soda"],
     Zero: ["Ryoko Otonashi"],
     V3: ["Shuichi Saihara","Kokichi Oma","K1-B0","Kaito Momota","Rantaro Amami","Korekiyo Shinguji","Gonta Gokuhara","Kaede Akamatsu","Maki Harukawa","Tenko Chabashira","Miu Iruma","Himiko Yumeno","Kirumi Tojo","Tsumugi Shirogane","Angie Yonaga","Ryoma Hoshi"],
     UDG: ["Komaru Naegi","Jataro Kemuri","Masaru Daimon","Nagisa Shingetsu","Kotoko Utsugi","Monaca Towa"]
   };
+  // Look-alike characters: a hint shown in the suggestion list, plus extra words that also find them
+  const LOOKALIKE = {
+    "Junko Enoshima": { hint: "the real Junko", also: "" },
+    "Junko (Mukuro)": { hint: "Mukuro in disguise", also: "enoshima ikusaba fashionista" },
+    "Mukuro Ikusaba": { hint: "undisguised", also: "" },
+    "Byakuya Togami": { hint: "the real Togami", also: "" },
+    "Twogami (Imposter)": { hint: "the Imposter", also: "togami byakuya" }
+  };
   const NAMES = [];
-  for (const g in CAST) CAST[g].forEach(n => NAMES.push({ n, g }));
+  for (const g in CAST) CAST[g].forEach(n => {
+    const l = LOOKALIKE[n];
+    NAMES.push({ n, g, hint: l ? l.hint : "", words: (n + " " + (l ? l.also : "")).toLowerCase().split(/[\s()-]+/).filter(Boolean) });
+  });
 
   // ---------- schema (mirrors the community format exactly) ----------
   const LOCS = ["Workbench","Medical workbench","Boiler Room","Kitchen (knife stand)","Incinerator","Staff Room","Technical Rooms"];
@@ -1087,12 +1098,12 @@ body:not([data-tab="notes"]) .dock { display: none !important; }
       close();
       if (q.length < 2) return;
       const ql = q.toLowerCase();
-      items = NAMES.filter(x => x.n.toLowerCase().split(/[\s()-]+/).some(w => w.startsWith(ql)) || x.n.toLowerCase().startsWith(ql)).slice(0, 8);
+      items = NAMES.filter(x => x.words.some(w => w.startsWith(ql)) || x.n.toLowerCase().startsWith(ql)).slice(0, 8);
       if (!items.length || (items.length === 1 && items[0].n.toLowerCase() === ql)) return;
       idx = 0;
       box = el("div", { class: "ac", role: "listbox" });
       items.forEach((x, i) => {
-        const d = el("div", { role: "option" }, [document.createTextNode(x.n), el("small", { text: x.g })]);
+        const d = el("div", { role: "option" }, [document.createTextNode(x.n), el("small", { text: x.hint ? x.g + " · " + x.hint : x.g })]);
         if (i === 0) d.classList.add("on");
         d.addEventListener("mousedown", e => { e.preventDefault(); pick(x.n); });
         box.appendChild(d);
